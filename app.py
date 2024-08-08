@@ -1,102 +1,55 @@
 from flask import Flask, request, jsonify
-from flask_sqlalchemy import SQLAlchemy
-from flask_cors import CORS
-import os
+import sqlite3
 
 app = Flask(__name__)
-CORS(app)
 
-# Configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///interview_bot.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# Initialize SQLite database connection
+def get_db_connection():
+    conn = sqlite3.connect('user_data.db')
+    conn.row_factory = sqlite3.Row
+    return conn
 
-db = SQLAlchemy(app)
+# Create the database table if it doesn't exist
+def create_table():
+    conn = get_db_connection()
+    conn.execute('''
+        CREATE TABLE IF NOT EXISTS user_data (
+            id INTEGER PRIMARY KEY,
+            user_name TEXT NOT NULL,
+            user_input TEXT NOT NULL
+        )
+    ''')
+    conn.commit()
+    conn.close()
 
-# Models
-class Question(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    type = db.Column(db.String(50))
-    difficulty = db.Column(db.String(50))
-    text = db.Column(db.String(500))
+create_table()
 
-class UserResponse(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    question_id = db.Column(db.Integer, db.ForeignKey('question.id'))
-    response = db.Column(db.String(1000))
-    feedback = db.Column(db.String(1000))
-
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100))
-    progress = db.Column(db.String(1000))
-
-# Create tables if they do not exist
-@app.before_first_request
-def create_tables():
-    if not os.path.exists('interview_bot.db'):
-        print("Database file not found. Creating tables.")
-    else:
-        print("Database file found. Ensuring tables exist.")
-    with app.app_context():
-        db.create_all()
-
-# Routes
-@app.route('/questions', methods=['GET'])
-def get_questions():
-    question_type = request.args.get('type')
-    difficulty = request.args.get('difficulty')
-    try:
-        questions = Question.query.filter_by(type=question_type, difficulty=difficulty).all()
-        return jsonify([q.text for q in questions])
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/feedback', methods=['POST'])
-def give_feedback():
+@app.route('/store_data', methods=['POST'])
+def store_data():
     data = request.json
-    try:
-        response = UserResponse(question_id=data['question_id'], response=data['response'], feedback='Good job! Keep improving.')
-        db.session.add(response)
-        db.session.commit()
-        return jsonify({'feedback': response.feedback})
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    user_name = data['user_name']
+    user_input = data['user_input']
+    
+    conn = get_db_connection()
+    conn.execute('INSERT INTO user_data (user_name, user_input) VALUES (?, ?)', (user_name, user_input))
+    conn.commit()
+    conn.close()
+    
+    return jsonify({"message": f"Data stored for {user_name}: {user_input}"}), 201
 
-@app.route('/tips', methods=['GET'])
-def get_tips():
-    tips = {
-        'general': 'Be confident and dress appropriately.',
-        'specific': 'For tech roles, focus on your problem-solving skills.'
-    }
-    return jsonify(tips)
-
-@app.route('/schedule', methods=['POST'])
-def schedule_mock_interview():
-    # Implementation for scheduling
-    return jsonify({'status': 'scheduled'})
-
-@app.route('/progress', methods=['GET'])
-def get_progress():
-    user_id = request.args.get('user_id')
-    try:
-        user = User.query.get(user_id)
-        if user:
-            return jsonify({'progress': user.progress})
-        else:
-            return jsonify({'error': 'User not found'}), 404
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/resources', methods=['GET'])
-def get_resources():
-    resources = [
-        {'type': 'article', 'title': 'How to ace your interview', 'link': 'https://example.com'},
-        {'type': 'book', 'title': 'Cracking the Coding Interview', 'link': 'https://example.com'}
-    ]
-    return jsonify(resources)
+@app.route('/retrieve_data', methods=['GET'])
+def retrieve_data():
+    user_name = request.args.get('user_name')
+    
+    conn = get_db_connection()
+    rows = conn.execute('SELECT user_input FROM user_data WHERE user_name = ?', (user_name,)).fetchall()
+    conn.close()
+    
+    if rows:
+        user_data = [row['user_input'] for row in rows]
+        return jsonify({"data": user_data}), 200
+    else:
+        return jsonify({"message": f"No data found for {user_name}"}), 404
 
 if __name__ == '__main__':
-    # Create tables and run the application
-    with app.app_context():
-        db.create_all()
-    app.run(host='0.0.0.0', port=80, debug=True)
+    app.run(host='0.0.0.0', port=5000)
