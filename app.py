@@ -5,6 +5,7 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///interview_bot.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 # Models
@@ -30,8 +31,12 @@ class User(db.Model):
 def get_questions():
     question_type = request.args.get('type')
     difficulty = request.args.get('difficulty')
+    print(f"Received request for questions with type: {question_type} and difficulty: {difficulty}")
     questions = Question.query.filter_by(type=question_type, difficulty=difficulty).all()
-    return jsonify([q.text for q in questions])
+    if questions:
+        return jsonify([q.text for q in questions])
+    else:
+        return jsonify([])
 
 @app.route('/feedback', methods=['POST'])
 def give_feedback():
