@@ -2,3 +2,5 @@ Flask
 Flask-SQLAlchemy
 Flask-Cors
 gunicorn
+Flask-Login
+werkzeug
