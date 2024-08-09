@@ -1,7 +1,14 @@
 from flask import Flask, request, jsonify
+import openai
+import os
+import schedule
+import time
+from datetime import datetime
+import statistics
 import json
 
 app = Flask(__name__)
+openai.api_key = os.getenv('OPENAI_API_KEY')
 
 # Example questions for demonstration purposes
 questions = {
@@ -355,6 +362,33 @@ questions = {
     }
 }
 
+def get_interview_question(role):
+    prompt = f"Generate a  interview question for a {role}."
+    try:
+        response = openai.Completion.create(
+            engine="text-davinci-003",
+            prompt=prompt,
+            max_tokens=50
+        )
+        return response.choices[0].text.strip()
+    except Exception as e:
+        return f"An error occurred: {e}"
+
+def schedule_interview(role, date_time):
+    print(f"Scheduled an interview for {role} on {date_time}")
+
+# Schedule job to generate an interview question daily
+def job():
+    role = "Software Developer"
+    question = get_interview_question(role)
+    print(f"Interview Question: {question}")
+    schedule_interview(role, datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+
+schedule.every().day.at("09:00").do(job)
+
+# Collect scores
+scores = []
+
 @app.route('/generate_questions', methods=['POST'])
 def generate_questions():
     data = request.json
@@ -394,13 +428,34 @@ def get_tips():
 
 @app.route('/schedule_mock_interview', methods=['POST'])
 def schedule_mock_interview():
-    # Placeholder scheduling logic
-    return jsonify({"message": "Mock interview scheduled successfully!"})
+    data = request.json
+    role = data.get('role')
+    interview_date = data.get('date_time')
 
-@app.route('/analyze_progress', methods=['GET'])
+    # Schedule the interview
+    schedule_interview(role, interview_date)
+    
+    # Generate interview question
+    question = get_interview_question(role)  # You might want to include difficulty in the request
+    return jsonify({"message": "Mock interview scheduled successfully!", "question": question})
+
+@app.route('/analyze_progress', methods=['POST'])
 def analyze_progress():
-    # Placeholder analysis logic
-    return jsonify({"progress": "You have completed 5 interviews and received feedback on 3."})
+    data = request.json
+    score = data.get('score')
+    
+    if score is not None:
+        scores.append(score)
+    
+    if not scores:
+        return jsonify({"average": None, "high": None, "low": None})
+    
+    average = statistics.mean(scores)
+    high = max(scores)
+    low = min(scores)
+    
+    return jsonify({"average": average, "high": high, "low": low})
+
 
 @app.route('/connect_resources', methods=['GET'])
 def connect_resources():
