@@ -15,9 +15,10 @@ login_manager.login_view = 'login'
 
 
 # Models
-class User(db.Model):
+class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
+    password = db.Column(db.String(120), nullable=False)
     mock_interviews = db.relationship('MockInterview', backref='user', lazy=True)
     progress = db.relationship('Progress', backref='user', lazy=True)
 
