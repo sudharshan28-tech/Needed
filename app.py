@@ -25,7 +25,7 @@ def generate_questions():
     difficulty = data.get('difficulty')
     num_questions = data.get('num_questions')
 
-    questions_list = questions.get(topic, {}).get(role,{}).get(difficulty, [])
+    questions_list = questions.get(topic, {}).get(difficulty, [])
     selected_questions = questions_list[:num_questions]
     
     return jsonify({"questions": selected_questions})
