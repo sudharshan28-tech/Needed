@@ -6,7 +6,7 @@ app = Flask(__name__)
 # Example questions for demonstration purposes
 questions = {
     "behavioral": {
-        "Software Developer"{
+        "Software Developer": {
         "easy": ["Describe a time when you had to work as part of a team.",
                 "Tell me about a time you faced a challenge at work.",
                 "Describe a time when you had to manage a conflict.",
@@ -41,7 +41,7 @@ questions = {
     }
     },
     "technical": {
-        "Software Developer"{
+        "Software Developer": {
         "easy": ["Explain the difference between SQL and NoSQL databases.", "What is a REST API?"],
         "medium": ["How do you manage state in React?", "Explain the concept of Big O notation."],
         "hard": ["Describe how you would design a scalable system.", "Explain the principles of microservices architecture."]
