@@ -207,11 +207,15 @@ def generate_questions():
     difficulty = data.get('difficulty')
     num_questions = data.get('num_questions')
 
+    print(f"Received Data: Role={role}, Topic={topic}, Difficulty={difficulty}, Num Questions={num_questions}")
+
     if topic == "technical" and role:
         questions_list = questions.get(topic, {}).get(role, {}).get(difficulty, [])
     else:
         questions_list = questions.get(topic, {}).get(difficulty, [])
     
+    print(f"Questions List: {questions_list}")
+
     selected_questions = questions_list[:num_questions]
     
     return jsonify({"questions": selected_questions})
