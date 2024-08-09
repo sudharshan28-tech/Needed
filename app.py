@@ -1,7 +1,33 @@
 from flask import Flask, request, jsonify
+from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 import json
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///bot_data.db'
+db = SQLAlchemy(app)
+
+# Models
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    mock_interviews = db.relationship('MockInterview', backref='user', lazy=True)
+    progress = db.relationship('Progress', backref='user', lazy=True)
+
+class MockInterview(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    scheduled_time = db.Column(db.DateTime, nullable=False)
+    recorded_file_path = db.Column(db.String(200), nullable=True)  # Path to recorded file
+
+class Progress(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    performance_score = db.Column(db.Integer, nullable=False)
+
+db.create_all()
+
 
 # Example questions for demonstration purposes
 questions = {
@@ -390,13 +416,70 @@ def get_tips():
 
 @app.route('/schedule_mock_interview', methods=['POST'])
 def schedule_mock_interview():
-    # Placeholder scheduling logic
-    return jsonify({"message": "Mock interview scheduled successfully!"})
+    data = request.json
+    username = data.get('username')
+    scheduled_time = datetime.fromisoformat(data.get('scheduled_time'))
 
-@app.route('/analyze_progress', methods=['GET'])
-def analyze_progress():
-    # Placeholder analysis logic
-    return jsonify({"progress": "You have completed 5 interviews and received feedback on 3."})
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    interview = MockInterview(user_id=user.id, scheduled_time=scheduled_time)
+    db.session.add(interview)
+    db.session.commit()
+    return jsonify({"message": "Mock interview scheduled successfully!"}), 200
+
+@app.route('/record_interview', methods=['POST'])
+def record_interview():
+    data = request.json
+    interview_id = data.get('interview_id')
+    file_path = data.get('file_path')
+
+    interview = MockInterview.query.get(interview_id)
+    if not interview:
+        return jsonify({"error": "Interview not found"}), 404
+
+    interview.recorded_file_path = file_path
+    db.session.commit()
+    return jsonify({"message": "Interview recorded successfully!"}), 200
+
+@app.route('/track_progress', methods=['POST'])
+def track_progress():
+    data = request.json
+    username = data.get('username')
+    performance_score = data.get('performance_score')
+
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    progress = Progress(user_id=user.id, performance_score=performance_score)
+    db.session.add(progress)
+    db.session.commit()
+    return jsonify({"message": "Progress recorded successfully!"}), 200
+
+@app.route('/get_insights', methods=['GET'])
+def get_insights():
+    username = request.args.get('username')
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    progress_records = Progress.query.filter_by(user_id=user.id).all()
+    if not progress_records:
+        return jsonify({"message": "No progress data available"}), 404
+
+    scores = [record.performance_score for record in progress_records]
+    avg_score = sum(scores) / len(scores)
+    max_score = max(scores)
+    min_score = min(scores)
+
+    insights = {
+        "average_score": avg_score,
+        "max_score": max_score,
+        "min_score": min_score
+    }
+    return jsonify(insights), 200
 
 @app.route('/connect_resources', methods=['GET'])
 def connect_resources():
