@@ -203,25 +203,19 @@ questions = {
 def generate_questions():
     data = request.json
     role = data.get('role')
-    category = data.get('topic')  # Assuming 'topic' refers to 'category'
+    topic = data.get('topic')
     difficulty = data.get('difficulty')
     num_questions = data.get('num_questions')
 
-    # Initialize an empty list for questions
-    questions_list = []
-
-    if category == 'Technical' and role:
-        # Fetch questions based on role, category, and difficulty for Technical category
-        questions_list = questions.get(category, {}).get(role, {}).get(difficulty, [])
+    if topic == "technical" and role:
+        questions_list = questions.get(topic, {}).get(role, {}).get(difficulty, [])
     else:
-        # Fetch questions based only on category and difficulty for non-Technical categories
-        questions_list = questions.get(category, {}).get(difficulty, [])
-
-    # Select the required number of questions
+        questions_list = questions.get(topic, {}).get(difficulty, [])
+    
     selected_questions = questions_list[:num_questions]
-
+    
     return jsonify({"questions": selected_questions})
-
+    
 @app.route('/feedback', methods=['POST'])
 def provide_feedback():
     data = request.json
