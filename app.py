@@ -6,7 +6,9 @@ app = Flask(__name__)
 # Example questions for demonstration purposes
 questions = {
     "Behavioral": {
-        "easy": [
+        
+        "Software Developer": {
+            "easy": [
             "Describe a time when you had to work as part of a team.",
             "Tell me about a time you faced a challenge at work.",
             "Describe a time when you had to manage a conflict.",
@@ -17,7 +19,7 @@ questions = {
             "How do you handle stress at work?",
             "Describe a situation where you had to solve a problem quickly.",
             "Tell me about a time when you had to adapt to a significant change."
-        ],
+           ],
         "medium": [
             "Describe a time when you led a project.",
             "Tell me about a situation where you had to make a difficult decision.",
@@ -29,7 +31,7 @@ questions = {
             "How do you approach setting goals?",
             "Describe a time when you had to resolve a disagreement within your team.",
             "Tell me about a situation where you exceeded expectations."
-        ],
+           ],
         "hard": [
             "Describe a time when you had to turn around a failing project.",
             "Tell me about a situation where you had to manage a significant crisis.",
@@ -41,7 +43,85 @@ questions = {
             "How do you handle conflicts between team members?",
             "Describe a situation where you had to make a decision that was unpopular.",
             "Tell me about a time when you had to work with a difficult stakeholder."
-        ]
+           ]
+        },
+        "Data Analyst": {
+           "easy": [
+            "Describe a time when you had to work as part of a team.",
+            "Tell me about a time you faced a challenge at work.",
+            "Describe a time when you had to manage a conflict.",
+            "How do you prioritize tasks?",
+            "Tell me about a time you had to meet a tight deadline.",
+            "Describe a situation where you took the initiative.",
+            "Tell me about a time when you received constructive criticism.",
+            "How do you handle stress at work?",
+            "Describe a situation where you had to solve a problem quickly.",
+            "Tell me about a time when you had to adapt to a significant change."
+           ],
+        "medium": [
+            "Describe a time when you led a project.",
+            "Tell me about a situation where you had to make a difficult decision.",
+            "Describe a time when you had to manage multiple responsibilities.",
+            "How do you handle working under pressure?",
+            "Tell me about a time when you had to deal with an uncooperative colleague.",
+            "Describe a situation where you had to learn something quickly.",
+            "Tell me about a time when you had to mentor a colleague.",
+            "How do you approach setting goals?",
+            "Describe a time when you had to resolve a disagreement within your team.",
+            "Tell me about a situation where you exceeded expectations."
+           ],
+        "hard": [
+            "Describe a time when you had to turn around a failing project.",
+            "Tell me about a situation where you had to manage a significant crisis.",
+            "Describe a time when you had to give difficult feedback to a team member.",
+            "How do you handle situations where you have to deliver bad news?",
+            "Tell me about a time when you had to influence others without authority.",
+            "Describe a situation where you had to make a quick decision with limited information.",
+            "Tell me about a time when you had to navigate a complex organizational change.",
+            "How do you handle conflicts between team members?",
+            "Describe a situation where you had to make a decision that was unpopular.",
+            "Tell me about a time when you had to work with a difficult stakeholder."
+           ]
+        },
+        "Marketing Manager": {
+           "easy": [
+            "Describe a time when you had to work as part of a team.",
+            "Tell me about a time you faced a challenge at work.",
+            "Describe a time when you had to manage a conflict.",
+            "How do you prioritize tasks?",
+            "Tell me about a time you had to meet a tight deadline.",
+            "Describe a situation where you took the initiative.",
+            "Tell me about a time when you received constructive criticism.",
+            "How do you handle stress at work?",
+            "Describe a situation where you had to solve a problem quickly.",
+            "Tell me about a time when you had to adapt to a significant change."
+           ],
+        "medium": [
+            "Describe a time when you led a project.",
+            "Tell me about a situation where you had to make a difficult decision.",
+            "Describe a time when you had to manage multiple responsibilities.",
+            "How do you handle working under pressure?",
+            "Tell me about a time when you had to deal with an uncooperative colleague.",
+            "Describe a situation where you had to learn something quickly.",
+            "Tell me about a time when you had to mentor a colleague.",
+            "How do you approach setting goals?",
+            "Describe a time when you had to resolve a disagreement within your team.",
+            "Tell me about a situation where you exceeded expectations."
+           ],
+        "hard": [
+            "Describe a time when you had to turn around a failing project.",
+            "Tell me about a situation where you had to manage a significant crisis.",
+            "Describe a time when you had to give difficult feedback to a team member.",
+            "How do you handle situations where you have to deliver bad news?",
+            "Tell me about a time when you had to influence others without authority.",
+            "Describe a situation where you had to make a quick decision with limited information.",
+            "Tell me about a time when you had to navigate a complex organizational change.",
+            "How do you handle conflicts between team members?",
+            "Describe a situation where you had to make a decision that was unpopular.",
+            "Tell me about a time when you had to work with a difficult stakeholder."
+           ]
+        }
+       
     },
     "Technical": {
         "Software Developer": {
@@ -56,7 +136,7 @@ questions = {
                 "What is the difference between SQL and NoSQL databases?",
                 "How do you handle exceptions in programming?",
                 "Describe your experience with cloud computing platforms."
-            ],
+               ],
             "medium": [
                 "Explain the SOLID principles of software design.",
                 "How do you optimize database queries?",
@@ -68,7 +148,7 @@ questions = {
                 "Describe your approach to writing scalable code.",
                 "What is the role of a software architect?",
                 "Explain the concept of machine learning and its applications."
-            ],
+               ],
             "hard": [
                 "Describe a complex system you have designed or worked on.",
                 "How do you handle performance bottlenecks in a large-scale application?",
@@ -80,7 +160,7 @@ questions = {
                 "How do you handle large-scale data processing?",
                 "Describe your experience with real-time data streaming technologies.",
                 "Explain the principles of DevOps and how you have applied them in your projects."
-            ]
+               ]
         },
         "Data Analyst": {
             "easy": [
@@ -94,7 +174,7 @@ questions = {
                 "How do you choose the right chart type for your data?",
                 "Describe your experience with Excel for data analysis.",
                 "What is the significance of data governance?"
-            ],
+               ],
             "medium": [
                 "Explain the concept of data warehousing.",
                 "How do you perform exploratory data analysis?",
@@ -106,7 +186,7 @@ questions = {
                 "How do you approach data storytelling?",
                 "What is the significance of outliers in a dataset?",
                 "How do you ensure the security of sensitive data?"
-            ],
+               ],
             "hard": [
                 "Describe a complex data analysis project you have worked on.",
                 "How do you handle real-time data analysis?",
@@ -118,7 +198,7 @@ questions = {
                 "How do you handle the challenges of data scalability?",
                 "What is the role of AI in data analytics?",
                 "Explain the concept of data ethics and how it applies to your work."
-            ]
+               ]
         },
         "Marketing Manager": {
             "easy": [
@@ -132,7 +212,7 @@ questions = {
                 "How do you handle customer feedback?",
                 "Describe your experience with email marketing.",
                 "What is the role of analytics in marketing?"
-            ],
+               ],
             "medium": [
                 "Explain the concept of customer journey mapping.",
                 "How do you approach market research?",
@@ -144,7 +224,7 @@ questions = {
                 "How do you handle a marketing crisis?",
                 "What is the role of storytelling in marketing?",
                 "How do you approach cross-channel marketing?"
-            ],
+               ],
             "hard": [
                 "Describe a complex marketing campaign you have led.",
                 "How do you handle the challenges of global marketing?",
@@ -156,11 +236,12 @@ questions = {
                 "How do you handle the challenges of marketing in a highly competitive industry?",
                 "What is the role of AI in modern marketing?",
                 "Explain the concept of sustainable marketing and how it applies to your work."
-            ]
+               ]
         }
     },
     "Situational": {
-        "easy": [
+        "Software Developer": {
+            "easy": [
             "What would you do if you disagreed with your manager's decision?",
             "How would you handle a situation where you missed a deadline?",
             "What would you do if you were assigned a task outside your expertise?",
@@ -171,7 +252,7 @@ questions = {
             "How would you handle a situation where you had to learn a new skill quickly?",
             "What would you do if you received conflicting instructions from two managers?",
             "How would you handle a situation where you had to work with a new team?"
-        ],
+           ],
         "medium": [
             "How would you handle a situation where a project is falling behind schedule?",
             "What would you do if you had to mediate a conflict between team members?",
@@ -183,7 +264,7 @@ questions = {
             "What would you do if your team is consistently missing targets?",
             "How would you handle a situation where you have to make a decision without enough data?",
             "What would you do if you had to deliver a project with limited resources?"
-        ],
+           ],
         "hard": [
             "How would you handle a situation where a key team member suddenly leaves?",
             "What would you do if you had to manage a project with conflicting stakeholder interests?",
@@ -195,7 +276,84 @@ questions = {
             "What would you do if you had to lead a team through a crisis?",
             "How would you approach a situation where your company is facing a financial downturn?",
             "What would you do if you had to manage a cross-functional team with conflicting priorities?"
-        ]
+           ]
+        },
+        "Data Analyst": {
+            "easy": [
+            "What would you do if you disagreed with your manager's decision?",
+            "How would you handle a situation where you missed a deadline?",
+            "What would you do if you were assigned a task outside your expertise?",
+            "How would you approach a situation where a team member isn't pulling their weight?",
+            "What would you do if you had to handle multiple urgent tasks at once?",
+            "How would you deal with a difficult client?",
+            "What would you do if you noticed a mistake in your colleague's work?",
+            "How would you handle a situation where you had to learn a new skill quickly?",
+            "What would you do if you received conflicting instructions from two managers?",
+            "How would you handle a situation where you had to work with a new team?"
+           ],
+        "medium": [
+            "How would you handle a situation where a project is falling behind schedule?",
+            "What would you do if you had to mediate a conflict between team members?",
+            "How would you approach a situation where your team is resistant to change?",
+            "What would you do if you were asked to lead a project with an unfamiliar technology?",
+            "How would you handle a situation where you had to meet an unrealistic deadline?",
+            "What would you do if you received negative feedback from a client?",
+            "How would you approach a situation where your project budget is cut?",
+            "What would you do if your team is consistently missing targets?",
+            "How would you handle a situation where you have to make a decision without enough data?",
+            "What would you do if you had to deliver a project with limited resources?"
+           ],
+        "hard": [
+            "How would you handle a situation where a key team member suddenly leaves?",
+            "What would you do if you had to manage a project with conflicting stakeholder interests?",
+            "How would you approach a situation where your project is under public scrutiny?",
+            "What would you do if your team is struggling with low morale?",
+            "How would you handle a situation where you have to turn around a failing project?",
+            "What would you do if you had to implement a major organizational change?",
+            "How would you handle a situation where you have to negotiate with a difficult client?",
+            "What would you do if you had to lead a team through a crisis?",
+            "How would you approach a situation where your company is facing a financial downturn?",
+            "What would you do if you had to manage a cross-functional team with conflicting priorities?"
+           ]
+        },
+        "Marketing Manager": {
+            "easy": [
+            "What would you do if you disagreed with your manager's decision?",
+            "How would you handle a situation where you missed a deadline?",
+            "What would you do if you were assigned a task outside your expertise?",
+            "How would you approach a situation where a team member isn't pulling their weight?",
+            "What would you do if you had to handle multiple urgent tasks at once?",
+            "How would you deal with a difficult client?",
+            "What would you do if you noticed a mistake in your colleague's work?",
+            "How would you handle a situation where you had to learn a new skill quickly?",
+            "What would you do if you received conflicting instructions from two managers?",
+            "How would you handle a situation where you had to work with a new team?"
+           ],
+        "medium": [
+            "How would you handle a situation where a project is falling behind schedule?",
+            "What would you do if you had to mediate a conflict between team members?",
+            "How would you approach a situation where your team is resistant to change?",
+            "What would you do if you were asked to lead a project with an unfamiliar technology?",
+            "How would you handle a situation where you had to meet an unrealistic deadline?",
+            "What would you do if you received negative feedback from a client?",
+            "How would you approach a situation where your project budget is cut?",
+            "What would you do if your team is consistently missing targets?",
+            "How would you handle a situation where you have to make a decision without enough data?",
+            "What would you do if you had to deliver a project with limited resources?"
+           ],
+        "hard": [
+            "How would you handle a situation where a key team member suddenly leaves?",
+            "What would you do if you had to manage a project with conflicting stakeholder interests?",
+            "How would you approach a situation where your project is under public scrutiny?",
+            "What would you do if your team is struggling with low morale?",
+            "How would you handle a situation where you have to turn around a failing project?",
+            "What would you do if you had to implement a major organizational change?",
+            "How would you handle a situation where you have to negotiate with a difficult client?",
+            "What would you do if you had to lead a team through a crisis?",
+            "How would you approach a situation where your company is facing a financial downturn?",
+            "What would you do if you had to manage a cross-functional team with conflicting priorities?"
+           ]
+        }
     }
 }
 
@@ -207,15 +365,7 @@ def generate_questions():
     difficulty = data.get('difficulty')
     num_questions = data.get('num_questions')
 
-    print(f"Received Data: Role={role}, Topic={topic}, Difficulty={difficulty}, Num Questions={num_questions}")
-
-    if topic == "technical" and role:
-        questions_list = questions.get(topic, {}).get(role, {}).get(difficulty, [])
-    else:
-        questions_list = questions.get(topic, {}).get(difficulty, [])
-    
-    print(f"Questions List: {questions_list}")
-
+    questions_list = questions.get(topic, {}).get(role, {}).get(difficulty, [])
     selected_questions = questions_list[:num_questions]
     
     return jsonify({"questions": selected_questions})
