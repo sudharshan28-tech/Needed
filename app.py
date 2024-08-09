@@ -1,11 +1,18 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 import json
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///bot_data.db'
+app.config['SECRET_KEY'] = 'your_secret_key'  # Change this to a secure key
+
 db = SQLAlchemy(app)
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'
+
 
 # Models
 class User(db.Model):
@@ -381,7 +388,48 @@ questions = {
     }
 }
 
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+# Routes
+@app.route('/signup', methods=['POST'])
+def signup():
+    data = request.json
+    username = data.get('username')
+    password = data.get('password')
+    
+    if User.query.filter_by(username=username).first():
+        return jsonify({"error": "Username already exists"}), 400
+
+    hashed_password = generate_password_hash(password, method='sha256')
+    new_user = User(username=username, password=hashed_password)
+    db.session.add(new_user)
+    db.session.commit()
+
+    return jsonify({"message": "User registered successfully!"}), 201
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    username = data.get('username')
+    password = data.get('password')
+
+    user = User.query.filter_by(username=username).first()
+    if not user or not check_password_hash(user.password, password):
+        return jsonify({"error": "Invalid credentials"}), 401
+
+    login_user(user)
+    return jsonify({"message": "Logged in successfully!"}), 200
+
+@app.route('/logout', methods=['POST'])
+@login_required
+def logout():
+    logout_user()
+    return jsonify({"message": "Logged out successfully!"}), 200
+
 @app.route('/generate_questions', methods=['POST'])
+@login_required
 def generate_questions():
     data = request.json
     role = data.get('role')
@@ -389,12 +437,13 @@ def generate_questions():
     difficulty = data.get('difficulty')
     num_questions = data.get('num_questions')
 
-    questions_list = questions.get(topic, {}).get(role,{}).get(difficulty, [])
+    questions_list = questions.get(topic, {}).get(difficulty, [])
     selected_questions = questions_list[:num_questions]
     
     return jsonify({"questions": selected_questions})
 
 @app.route('/feedback', methods=['POST'])
+@login_required
 def provide_feedback():
     data = request.json
     answer = data.get('answer')
@@ -403,6 +452,7 @@ def provide_feedback():
     return jsonify({"feedback": feedback})
 
 @app.route('/tips', methods=['GET'])
+@login_required
 def get_tips():
     # Placeholder tips
     tips = {
@@ -415,57 +465,46 @@ def get_tips():
     return jsonify(tips)
 
 @app.route('/schedule_mock_interview', methods=['POST'])
+@login_required
 def schedule_mock_interview():
     data = request.json
-    username = data.get('username')
     scheduled_time = datetime.fromisoformat(data.get('scheduled_time'))
 
-    user = User.query.filter_by(username=username).first()
-    if not user:
-        return jsonify({"error": "User not found"}), 404
-
-    interview = MockInterview(user_id=user.id, scheduled_time=scheduled_time)
+    interview = MockInterview(user_id=current_user.id, scheduled_time=scheduled_time)
     db.session.add(interview)
     db.session.commit()
     return jsonify({"message": "Mock interview scheduled successfully!"}), 200
 
 @app.route('/record_interview', methods=['POST'])
+@login_required
 def record_interview():
     data = request.json
     interview_id = data.get('interview_id')
     file_path = data.get('file_path')
 
     interview = MockInterview.query.get(interview_id)
-    if not interview:
-        return jsonify({"error": "Interview not found"}), 404
+    if not interview or interview.user_id != current_user.id:
+        return jsonify({"error": "Interview not found or unauthorized"}), 404
 
     interview.recorded_file_path = file_path
     db.session.commit()
     return jsonify({"message": "Interview recorded successfully!"}), 200
 
 @app.route('/track_progress', methods=['POST'])
+@login_required
 def track_progress():
     data = request.json
-    username = data.get('username')
     performance_score = data.get('performance_score')
 
-    user = User.query.filter_by(username=username).first()
-    if not user:
-        return jsonify({"error": "User not found"}), 404
-
-    progress = Progress(user_id=user.id, performance_score=performance_score)
+    progress = Progress(user_id=current_user.id, performance_score=performance_score)
     db.session.add(progress)
     db.session.commit()
     return jsonify({"message": "Progress recorded successfully!"}), 200
 
 @app.route('/get_insights', methods=['GET'])
+@login_required
 def get_insights():
-    username = request.args.get('username')
-    user = User.query.filter_by(username=username).first()
-    if not user:
-        return jsonify({"error": "User not found"}), 404
-
-    progress_records = Progress.query.filter_by(user_id=user.id).all()
+    progress_records = Progress.query.filter_by(user_id=current_user.id).all()
     if not progress_records:
         return jsonify({"message": "No progress data available"}), 404
 
@@ -482,6 +521,7 @@ def get_insights():
     return jsonify(insights), 200
 
 @app.route('/connect_resources', methods=['GET'])
+@login_required
 def connect_resources():
     resources = {
         "articles": ["https://example.com/article1", "https://example.com/article2"],
