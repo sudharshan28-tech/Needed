@@ -7,7 +7,7 @@ import json
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///bot_data.db'
-app.config['SECRET_KEY'] = 'your_secret_key'  # Change this to a secure key
+app.config['SECRET_KEY'] = 'b545b1863b90820af96e7c47d9510f2c'  # Change this to a secure key
 
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
