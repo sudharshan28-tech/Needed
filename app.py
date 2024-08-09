@@ -26,8 +26,8 @@ class Progress(db.Model):
     date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     performance_score = db.Column(db.Integer, nullable=False)
 
-db.create_all()
-
+with app.app_context():
+    db.create_all() 
 
 # Example questions for demonstration purposes
 questions = {
