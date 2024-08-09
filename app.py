@@ -429,7 +429,6 @@ def logout():
     return jsonify({"message": "Logged out successfully!"}), 200
 
 @app.route('/generate_questions', methods=['POST'])
-@login_required
 def generate_questions():
     data = request.json
     role = data.get('role')
