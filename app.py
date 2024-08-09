@@ -363,7 +363,7 @@ def generate_questions():
     difficulty = data.get('difficulty')
     num_questions = data.get('num_questions')
 
-    questions_list = questions.get(topic, {}).get(difficulty, [])
+    questions_list = questions.get(topic, {}).get(role,{}).get(difficulty, [])
     selected_questions = questions_list[:num_questions]
     
     return jsonify({"questions": selected_questions})
@@ -383,7 +383,11 @@ def get_tips():
         "general": ["Maintain good body language.", "Dress professionally.", "Be punctual."],
         "role_specific": {
             "Software Developer": ["Practice coding problems.", "Be familiar with system design."],
-            "Data Analyst": ["Be ready to discuss data visualization tools.", "Understand statistical analysis techniques."]
+            "Data Analyst": ["Be ready to discuss data visualization tools.", "Understand statistical analysis techniques."],
+            "Marketing Manager": [
+    "Leverage data-driven insights to optimize marketing strategies.",
+    "Focus on building a strong and consistent brand identity."
+]
         }
     }
     return jsonify(tips)
