@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 # Example questions for demonstration purposes
 questions = {
-    "Behavioral": {
+    "behavioral": {
         "Software Developer": {
             "easy": [
                 "Describe a time when you had to work as part of a team.",
@@ -121,7 +121,7 @@ questions = {
             ]
         }
     },
-    "Technical": {
+    "technical": {
         "Software Developer": {
             "easy": [
                 "What is your experience with Python?",
