@@ -6,6 +6,8 @@ app = Flask(__name__)
 # Example questions for demonstration purposes
 questions = {
     "behavioral": {
+        "Data Analyst":{
+        
         "easy": ["Describe a time when you had to work as part of a team.",
                 "Tell me about a time you faced a challenge at work.",
                 "Describe a time when you had to manage a conflict.",
@@ -19,11 +21,14 @@ questions = {
 ],
         "medium": ["Give an example of how you handle stress.", "Describe a time you had a conflict with a coworker."],
         "hard": ["Describe a situation where you demonstrated leadership.", "Tell me about a time when you had to make a difficult decision."]
+        }
     },
     "technical": {
+        "Data Analyst":{
         "easy": ["Explain the difference between SQL and NoSQL databases.", "What is a REST API?"],
         "medium": ["How do you manage state in React?", "Explain the concept of Big O notation."],
         "hard": ["Describe how you would design a scalable system.", "Explain the principles of microservices architecture."]
+        }
     }
 }
 
@@ -35,7 +40,7 @@ def generate_questions():
     difficulty = data.get('difficulty')
     num_questions = data.get('num_questions')
 
-    questions_list = questions.get(topic, {}).get(difficulty, [])
+    questions_list = questions.get(topic, {}).get(role,{}).get(difficulty, [])
     selected_questions = questions_list[:num_questions]
     
     return jsonify({"questions": selected_questions})
