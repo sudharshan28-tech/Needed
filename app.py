@@ -6,7 +6,17 @@ app = Flask(__name__)
 # Example questions for demonstration purposes
 questions = {
     "behavioral": {
-        "easy": ["Tell me about a time you overcame a challenge.", "Describe a situation where you worked as a team."],
+        "easy": ["Describe a time when you had to work as part of a team.",
+                "Tell me about a time you faced a challenge at work.",
+                "Describe a time when you had to manage a conflict.",
+                "How do you prioritize tasks?",
+                "Tell me about a time you had to meet a tight deadline.",
+                "Describe a situation where you took the initiative.",
+                "Tell me about a time when you received constructive criticism.",
+                "How do you handle stress at work?",
+                "Describe a situation where you had to solve a problem quickly.",
+                "Tell me about a time when you had to adapt to a significant change."
+],
         "medium": ["Give an example of how you handle stress.", "Describe a time you had a conflict with a coworker."],
         "hard": ["Describe a situation where you demonstrated leadership.", "Tell me about a time when you had to make a difficult decision."]
     },
